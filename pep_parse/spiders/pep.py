@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 import scrapy
 
 from pep_parse.items import PepParseItem
@@ -6,7 +8,7 @@ from pep_parse.items import PepParseItem
 class PepSpider(scrapy.Spider):
     name = 'pep'
     allowed_domains = ['peps.python.org']
-    start_urls = ['https://peps.python.org/']
+    start_urls = ['https://' + url + '/' for url in allowed_domains]
 
     def parse(self, response):
         tbody = response.css('section#numerical-index > table > tbody')

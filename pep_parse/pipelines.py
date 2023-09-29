@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import datetime as dt
 from pathlib import Path
 
+from pep_parse.constants import RESULTS_DIR_NAME
 
 BASE_DIR = Path(__file__).parent.parent
 
@@ -20,10 +21,13 @@ class PepParsePipeline:
     def close_spider(self, spider):
         time_now = dt.now().strftime('%Y-%m-%d_%H-%M-%S')
         filename = f'status_summary_{time_now}.csv'
-        path = BASE_DIR / 'results' / filename
+        results_dir = BASE_DIR / RESULTS_DIR_NAME
+        results_dir.mkdir(exist_ok=True)
+        path = results_dir / filename
+
         with open(path, mode='w', encoding='utf-8') as f:
             writer = csv.writer(f, lineterminator='\n')
-            writer.writerow(('Статус', 'Количество'))
-            for status, count in self.statuses_count.items():
-                writer.writerow((status, count))
-            writer.writerow(('Total', self.total))
+            data = [('Статус', 'Количество')]
+            data.extend((status, count) for status, count in self.statuses_count.items())
+            data.append(('Total', self.total))
+            writer.writerows(data)
