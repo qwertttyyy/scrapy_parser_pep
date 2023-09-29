@@ -28,6 +28,9 @@ class PepParsePipeline:
         with open(path, mode='w', encoding='utf-8') as f:
             writer = csv.writer(f, lineterminator='\n')
             data = [('Статус', 'Количество')]
-            data.extend((status, count) for status, count in self.statuses_count.items())
+            data.extend(
+                (status, count)
+                for status, count in self.statuses_count.items()
+            )
             data.append(('Total', self.total))
             writer.writerows(data)
